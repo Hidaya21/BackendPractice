@@ -34,6 +34,21 @@ namespace FlightManagementSystem
             FlightContext.Aircrafts.Add(a);
             Console.WriteLine("Aircraft added successfully. ID = " + a.aircraftId);
         }
+        public static void RegisterPilot()
+        {
+            Pilot p = new Pilot();
+            p.pilotId = FlightContext.Pilots.Count + 1;
+            Console.Write("Name: ");
+            p.pilotName = Console.ReadLine();
+            Console.Write("Phone: ");
+            p.pilotPhone = Console.ReadLine();
+            Console.Write("License Number: ");
+            p.licenseNumber = Console.ReadLine();
+            p.flightHours = 0;
+            p.isAvailable = true;
+            FlightContext.Pilots.Add(p);
+            Console.WriteLine("Pilot added successfully. ID = " + p.pilotId);
+        }
 
         static void Main(string[] args)
         {
@@ -69,7 +84,7 @@ namespace FlightManagementSystem
 
                     case 3:
                         Console.WriteLine("==== Register Pilot ====");
-                        //RegisterPilot();
+                        RegisterPilot();
                         break;
 
                     case 4:
