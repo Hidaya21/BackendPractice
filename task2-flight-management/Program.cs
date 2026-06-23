@@ -110,7 +110,7 @@ namespace FlightManagementSystem
 
                     case 4:
                         Console.WriteLine("==== View All Flights ====");
-                        //ViewAllFlights();
+                        ViewAllFlights();
                         break;
                     case 5:
                         Console.WriteLine("==== Schedule a Flight ====");
