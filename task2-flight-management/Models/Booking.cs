@@ -4,7 +4,7 @@ using System.Text;
 
 namespace FlightManagementSystem.Models
 {
-    internal class Booking
+    public class Booking
     {
         public int bookingId { get; set; }                // Unique identifier
         public int passengerId { get; set; }              // Passenger ID
