@@ -49,6 +49,27 @@ namespace FlightManagementSystem
             FlightContext.Pilots.Add(p);
             Console.WriteLine("Pilot added successfully. ID = " + p.pilotId);
         }
+        public static void ViewAllFlights()
+        {
+            if (FlightContext.Flights.Count == 0)
+            {
+                Console.WriteLine("No flights available.");
+                return;
+            }
+            foreach (var f in FlightContext.Flights)
+            {
+                Console.WriteLine("---------------");
+                Console.WriteLine("Flight Code: " + f.flightCode);
+                Console.WriteLine("From: " + f.origin);
+                Console.WriteLine("To: " + f.destination);
+                Console.WriteLine("Date: " + f.departureDate);
+                Console.WriteLine("Time: " + f.departureTime);
+                Console.WriteLine("Available Seats: " + f.availableSeats);
+                Console.WriteLine("Price: " + f.ticketPrice);
+                Console.WriteLine("Status: " + f.status);
+            }
+        }
+
 
         static void Main(string[] args)
         {
