@@ -70,6 +70,103 @@ namespace FlightManagementSystem
             }
         }
 
+        public static void ScheduleFlight()
+        {
+            // Check aircrafts
+            if (FlightContext.Aircrafts.Count == 0)
+            {
+                Console.WriteLine("No aircrafts available.");
+                return;
+            }
+            // Check pilots
+            if (FlightContext.Pilots.Count == 0)
+            {
+                Console.WriteLine("No pilots available.");
+                return;
+            }
+            Console.WriteLine("===== AVAILABLE AIRCRAFTS =====");
+
+            foreach (var aircraft in FlightContext.Aircrafts)
+            {
+                if (aircraft.isOperational == true)
+                {
+                    Console.WriteLine(
+                        "ID: " + aircraft.aircraftId + " | Model: " + aircraft.model + " | Seats: " + aircraft.totalSeats
+                    );
+                }
+            }
+            Console.Write("Choose Aircraft ID: ");
+            int aircraftId = int.Parse(Console.ReadLine());
+            Aircraft selectedAircraft = null;
+            foreach (var aircraft in FlightContext.Aircrafts)
+            {
+                if (aircraft.aircraftId == aircraftId && aircraft.isOperational == true)
+                {
+                    selectedAircraft = aircraft;
+                }
+            }
+            if (selectedAircraft == null)
+            {
+                Console.WriteLine("Invalid aircraft.");
+                return;
+            }
+            Console.WriteLine("===== AVAILABLE PILOTS =====");
+            foreach (var pilot in FlightContext.Pilots)
+            {
+                if (pilot.isAvailable == true)
+                {
+                    Console.WriteLine(
+                        "ID: " + pilot.pilotId + " | Name: " + pilot.pilotName
+                    );
+                }
+            }
+            Console.Write("Choose Pilot ID: ");
+            int pilotId = int.Parse(Console.ReadLine());
+            Pilot selectPilot = null;
+            foreach (var pilot in FlightContext.Pilots)
+            {
+                if (pilot.pilotId == pilotId && pilot.pilotId == pilotId)
+                {
+                    if (pilot.pilotId == pilotId && pilot.isAvailable == true)
+                    {
+                        selectPilot = pilot;
+
+                    }
+                }
+
+                if (selectPilot == null)
+                {
+                    Console.WriteLine("Invalid pilot.");
+                    return;
+                }
+                Flight flight = new Flight();
+                // Generate a unique ID for the new flight
+                flight.flightId = FlightContext.Flights.Count + 1;
+                // Auto generate flight code
+                flight.flightCode = "OA-" + (200 + flight.flightId);
+                flight.aircraftId = selectedAircraft.aircraftId;
+                flight.pilotId = selectPilot.pilotId;
+                Console.Write("Origin: ");
+                flight.origin = Console.ReadLine();
+                Console.Write("Destination: ");
+                flight.destination = Console.ReadLine();
+                Console.Write("Departure Date: ");
+                flight.departureDate = Console.ReadLine();
+                Console.Write("Departure Time: ");
+                flight.departureTime = Console.ReadLine();
+                Console.Write("Ticket Price: ");
+                flight.ticketPrice = decimal.Parse(Console.ReadLine());
+                // Seats come from aircraft
+                flight.availableSeats = selectedAircraft.totalSeats;
+                // Default status
+                flight.status = "Scheduled";
+                FlightContext.Flights.Add(flight);
+                // Pilot becomes unavailable
+                selectPilot.isAvailable = false;
+                Console.WriteLine("Flight scheduled successfully.");
+                Console.WriteLine("Flight Code: " + flight.flightCode);
+            }
+        }
 
         static void Main(string[] args)
         {
@@ -114,6 +211,7 @@ namespace FlightManagementSystem
                         break;
                     case 5:
                         Console.WriteLine("==== Schedule a Flight ====");
+                        ScheduleFlight();
                         break;
                     case 6:
                         Console.WriteLine("==== Book a Flight ====");
