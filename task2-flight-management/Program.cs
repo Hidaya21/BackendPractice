@@ -294,6 +294,108 @@ namespace FlightManagementSystem
             }
             Console.WriteLine("Booking cancelled successfully");
         }
+        public static void DepartFlight()
+        {
+            // Check flights
+            if (FlightContext.Flights.Count == 0)
+            {
+                Console.WriteLine("No flights found.");
+                return;
+            }
+            Console.WriteLine("===== SCHEDULED FLIGHTS =====");
+            foreach (var flight in FlightContext.Flights)
+            {
+                if (flight.status == "Scheduled")
+                {
+                    Console.WriteLine("Flight ID: " + flight.flightId +" | Code: " + flight.flightCode +" | From: " + flight.origin +" | To: " + flight.destination
+                    );
+                }
+            }
+            Console.Write("Enter Flight ID: ");
+            int flightId = int.Parse(Console.ReadLine());
+            Flight selectedFlight = null;
+            foreach (var flight in FlightContext.Flights)
+            {
+                if (flight.flightId == flightId &&flight.status == "Scheduled")
+                {
+                    selectedFlight = flight;
+                }
+            }
+
+            if (selectedFlight == null)
+            {
+                Console.WriteLine("Flight not found.");
+                return;
+            }
+            // Change flight status
+            selectedFlight.status = "Departed";
+            // Ask for flight duration
+            Console.Write("Enter Flight Hours: ");
+            int hours = int.Parse(Console.ReadLine());
+
+            // Update pilot flight hours
+            foreach (var pilot in FlightContext.Pilots)
+            {
+                if (pilot.pilotId == selectedFlight.pilotId)
+                {
+                    pilot.flightHours += hours;
+                    // Pilot becomes available again
+                    pilot.isAvailable = true;
+                }
+            }
+            Console.WriteLine("Flight departed successfully");
+        }
+        public static void CancelFlight()
+        {
+            if (FlightContext.Flights.Count == 0)
+            {
+                Console.WriteLine("No flights found");
+                return;
+            }
+            Console.Write("Enter Flight ID to cancel: ");
+            int flightId = int.Parse(Console.ReadLine());
+            Flight selectedFlight = null;
+            foreach (var f in FlightContext.Flights)
+            {
+                if (f.flightId == flightId)
+                {
+                    selectedFlight = f;
+                }
+            }
+            if (selectedFlight == null)
+            {
+                Console.WriteLine("Flight not found.");
+                return;
+            }
+            if (selectedFlight.status == "Cancelled")
+            {
+                Console.WriteLine("Flight already cancelled.");
+                return;
+            }
+            selectedFlight.status = "Cancelled";
+            int affectedBookings = 0;
+            // cancel bookings
+            foreach (var b in FlightContext.Bookings)
+            {
+                if (b.flightId == flightId && b.status == "Confirmed")
+                {
+                    b.status = "Cancelled";
+                    selectedFlight.availableSeats++;
+                    affectedBookings++;
+                }
+            }
+
+           // return pilot
+            foreach (var p in FlightContext.Pilots)
+            {
+                if (p.pilotId == selectedFlight.pilotId)
+                {
+                    p.isAvailable = true;
+                }
+            }
+            Console.WriteLine("Flight cancelled successfully");
+            Console.WriteLine("Bookings affected: " + affectedBookings);
+        }
         static void Main(string[] args)
         {
             while (true)
@@ -359,9 +461,11 @@ namespace FlightManagementSystem
                         break;
                     case 8:
                         Console.WriteLine("==== Depart a Flight ====");
+                        DepartFlight();
                         break;
                     case 9:
                         Console.WriteLine("==== Cancel a Flight ====");
+                        CancelFlight();
                         break;
                     case 10:
                         Console.WriteLine("==== Passenger Booking History ====");
