@@ -7,32 +7,102 @@ namespace FlightManagementSystem
     {
         public static void RegisterPassenger()
         {
-            Passenger p = new Passenger();
-            p.passengerId = FlightContext.Passengers.Count + 1;
-            Console.Write("Enter your Name: ");
-            p.passengerName = Console.ReadLine();
-            Console.Write("Enter your  Email: ");
-            p.passengerEmail = Console.ReadLine();
-            Console.Write("Enter your  Phone: ");
-            p.passengerPhone = Console.ReadLine();
-            Console.Write("Enter your Passport Number: ");
-            p.passportNumber = Console.ReadLine();
-            Console.Write("Enter your  Nationality: ");
-            p.nationality = Console.ReadLine();
-            FlightContext.Passengers.Add(p);
-            Console.WriteLine("Passenger added successfully. ID = " + p.passengerId);
+            try
+            {
+                Passenger p = new Passenger();
+                p.passengerId = FlightContext.Passengers.Count + 1;
+                // Name Validation
+                Console.Write("Enter Passenger Name: ");
+                p.passengerName = Console.ReadLine();
+
+                while (string.IsNullOrWhiteSpace(p.passengerName))
+                {
+                    Console.Write("Name cannot be empty. Enter again: ");
+                    p.passengerName = Console.ReadLine();
+                }
+                // Email Validation
+                Console.Write("Enter Email: ");
+                p.passengerEmail = Console.ReadLine();
+                while (string.IsNullOrWhiteSpace(p.passengerEmail) ||
+                       !p.passengerEmail.Contains("@"))
+                {
+                    Console.Write("Invalid email. Enter again: ");
+                    p.passengerEmail = Console.ReadLine();
+                }
+                // Phone Validation
+                Console.Write("Enter Phone: ");
+                p.passengerPhone = Console.ReadLine();
+                while (string.IsNullOrWhiteSpace(p.passengerPhone))
+                {
+                    Console.Write("Phone cannot be empty. Enter again: ");
+                    p.passengerPhone = Console.ReadLine();
+                }
+                // Passport Validation
+                Console.Write("Enter Passport Number: ");
+                p.passportNumber = Console.ReadLine();
+
+                while (string.IsNullOrWhiteSpace(p.passportNumber))
+                {
+                    Console.Write("Passport Number cannot be empty. Enter again: ");
+                    p.passportNumber = Console.ReadLine();
+                }
+                // Nationality Validation
+                Console.Write("Enter Nationality: ");
+                p.nationality = Console.ReadLine();
+
+                while (string.IsNullOrWhiteSpace(p.nationality))
+                {
+                    Console.Write("Nationality cannot be empty. Enter again: ");
+                    p.nationality = Console.ReadLine();
+                }
+
+                // Save Passenger
+                FlightContext.Passengers.Add(p);
+
+                Console.WriteLine("Passenger added successfully");
+                Console.WriteLine("Passenger ID = " + p.passengerId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred while registering passenger.");
+                Console.WriteLine("Error: " + ex.Message);
+            }
         }
         public static void AddAircraft()
         {
-            Aircraft a = new Aircraft();
-            a.aircraftId = FlightContext.Aircrafts.Count + 1;
-            Console.Write("Model: ");
-            a.model = Console.ReadLine();
-            Console.Write("Total Seats: ");
-            a.totalSeats = int.Parse(Console.ReadLine());
-            a.isOperational = true;
-            FlightContext.Aircrafts.Add(a);
-            Console.WriteLine("Aircraft added successfully. ID = " + a.aircraftId);
+            try
+            {
+                Aircraft a = new Aircraft();
+                a.aircraftId = FlightContext.Aircrafts.Count + 1;
+                // Model Validation
+                Console.Write("Enter Aircraft Model: ");
+                a.model = Console.ReadLine();
+                while (string.IsNullOrWhiteSpace(a.model))
+                {
+                    Console.Write("Model cannot be empty. Enter again: ");
+                    a.model = Console.ReadLine();
+                }
+                // Total Seats Validation
+                int seats;
+                Console.Write("Enter Total Seats: ");
+                while (!int.TryParse(Console.ReadLine(), out seats) || seats <= 0)
+                {
+                    Console.Write("Invalid number. Enter valid seats count: ");
+                }
+
+                a.totalSeats = seats;
+                // Default Status
+                a.isOperational = true;
+                // Save Aircraft
+                FlightContext.Aircrafts.Add(a);
+                Console.WriteLine("Aircraft added successfully");
+                Console.WriteLine("Aircraft ID: " + a.aircraftId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred while adding aircraft.");
+                Console.WriteLine("Error: " + ex.Message);
+            }
         }
         public static void RegisterPilot()
         {
@@ -384,7 +454,6 @@ namespace FlightManagementSystem
                     affectedBookings++;
                 }
             }
-
            // return pilot
             foreach (var p in FlightContext.Pilots)
             {
@@ -395,6 +464,177 @@ namespace FlightManagementSystem
             }
             Console.WriteLine("Flight cancelled successfully");
             Console.WriteLine("Bookings affected: " + affectedBookings);
+        } 
+        public static void PassengerBookingHistory()
+        {
+            try
+            {
+                // Check if there are passengers
+                if (FlightContext.Passengers.Count == 0)
+                {
+                    Console.WriteLine("No passengers found.");
+                    return;
+                }
+                // Check if there are bookings
+                if (FlightContext.Bookings.Count == 0)
+                {
+                    Console.WriteLine("No bookings found.");
+                    return;
+                }
+                // Input validation
+                int passengerId;
+                Console.Write("Enter Passenger ID: ");
+                while (!int.TryParse(Console.ReadLine(), out passengerId))
+                {
+                    Console.Write("Invalid input. Enter valid Passenger ID: ");
+                }
+                // Find passenger
+                Passenger selectedPassenger = null;
+
+                foreach (var passenger in FlightContext.Passengers)
+                {
+                    if (passenger.passengerId == passengerId)
+                    {
+                        selectedPassenger = passenger;
+                        break;
+                    }
+                }
+                if (selectedPassenger == null)
+                {
+                    Console.WriteLine("Passenger not found.");
+                    return;
+                }
+                Console.WriteLine("===== PASSENGER BOOKING HISTORY =====");
+                bool hasBookings = false;
+                decimal totalSpent = 0;
+                // Loop through bookings
+                foreach (var booking in FlightContext.Bookings)
+                {
+                    if (booking.passengerId == passengerId)
+                    {
+                        hasBookings = true;
+                        // Find related flight
+                        foreach (var flight in FlightContext.Flights)
+                        {
+                            if (flight.flightId == booking.flightId)
+                            {
+                                Console.WriteLine("--------------------------------------");
+
+                                Console.WriteLine("Flight Code     : " + flight.flightCode);
+
+                                Console.WriteLine("Origin          : " + flight.origin);
+
+                                Console.WriteLine("Destination     : " + flight.destination);
+
+                                Console.WriteLine("Departure Date  : " + flight.departureDate);
+
+                                Console.WriteLine("Seat Number     : " + booking.seatNumber);
+
+                                Console.WriteLine("Price Paid      : " + booking.totalPrice);
+
+                                Console.WriteLine("Booking Status  : " + booking.status);
+
+                                // Add confirmed bookings only
+                                if (booking.status == "Confirmed")
+                                {
+                                    totalSpent += booking.totalPrice;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!hasBookings)
+                {
+                    Console.WriteLine("This passenger has no booking history.");
+                    return;
+                }
+
+                Console.WriteLine("--------------------------------------");
+                Console.WriteLine("Total Amount Spent (Confirmed Only): " + totalSpent);
+                Console.WriteLine("======================================");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred while retrieving booking history.");
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+     
+        public static void FlightRevenueReport()
+        {
+            try
+            {
+                if (FlightContext.Flights.Count == 0)
+                {
+                    Console.WriteLine("No flights found.");
+                    return;
+                }
+                decimal grandTotalRevenue = 0;
+                // Create temporary report list
+                List<(Flight flight, int confirmedBookings, decimal revenue, double loadFactor)> report
+                    = new List<(Flight, int, decimal, double)>();
+
+                foreach (var flight in FlightContext.Flights)
+                {
+                    int confirmedBookings = 0;
+
+                    decimal revenue = 0;
+
+                    int totalSeats = 0;
+                    // Find aircraft seats
+                    foreach (var aircraft in FlightContext.Aircrafts)
+                    {
+                        if (aircraft.aircraftId == flight.aircraftId)
+                        {
+                            totalSeats = aircraft.totalSeats;
+                            break;
+                        }
+                    }
+                    // Calculate bookings and revenue
+                    foreach (var booking in FlightContext.Bookings)
+                    {
+                        if (booking.flightId == flight.flightId &&
+                            booking.status == "Confirmed")
+                        {
+                            confirmedBookings++;
+
+                            revenue += booking.totalPrice;
+                        }
+                    }
+                    // Calculate Load Factor
+                    double loadFactor = 0;
+                    if (totalSeats > 0)
+                    {
+                        loadFactor = ((double)confirmedBookings / totalSeats) * 100;
+                    }
+                    // Add to report
+                    report.Add((flight, confirmedBookings, revenue, loadFactor));
+                    // Add to grand total
+                    grandTotalRevenue += revenue;
+                }
+                // Sort by revenue descending
+                report = report.OrderByDescending(r => r.revenue).ToList();
+                Console.WriteLine("===== FLIGHT REVENUE REPORT =====");
+                foreach (var item in report)
+                {
+                    Console.WriteLine("--------------------------------------");
+                    Console.WriteLine("Flight Code         : " + item.flight.flightCode);
+                    Console.WriteLine("Route               : " + item.flight.origin + " -> " + item.flight.destination);
+                    Console.WriteLine("Confirmed Bookings  : " + item.confirmedBookings);
+                    Console.WriteLine("Total Revenue       : " + item.revenue);
+                    Console.WriteLine("Load Factor         : " + item.loadFactor.ToString("0.00") + "%");
+                }
+                Console.WriteLine("--------------------------------------");
+                Console.WriteLine("Grand Total Revenue : " + grandTotalRevenue);
+                Console.WriteLine("======================================");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred while generating report.");
+
+                Console.WriteLine("Error: " + ex.Message);
+            }
         }
         static void Main(string[] args)
         {
@@ -432,8 +672,8 @@ namespace FlightManagementSystem
                 switch (choice)
                 {
                     case 1:
-                            Console.WriteLine("==== Register Passenger ====");
-                            RegisterPassenger();
+                         Console.WriteLine("==== Register Passenger ====");
+                         RegisterPassenger();
                         break;
                     case 2:
                         Console.WriteLine("==== Add Aircraft ====");
@@ -469,9 +709,11 @@ namespace FlightManagementSystem
                         break;
                     case 10:
                         Console.WriteLine("==== Passenger Booking History ====");
+                        PassengerBookingHistory();
                         break;
                     case 11:
                         Console.WriteLine("==== Flight Revenue & Load Factor Report ====");
+                        FlightRevenueReport();
                         break;
                     case 0:
                         return;
