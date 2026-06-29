@@ -166,7 +166,11 @@ namespace FlightManagementSystem
                 }
             }
             Console.Write("Choose Aircraft ID: ");
-            int aircraftId = int.Parse(Console.ReadLine());
+            int aircraftId;
+            while (!int.TryParse(Console.ReadLine(), out aircraftId))
+            {
+                Console.Write("Invalid Aircraft ID. Enter again: ");
+            }
             Aircraft selectedAircraft = null;
             foreach (var aircraft in FlightContext.Aircrafts)
             {
@@ -191,7 +195,12 @@ namespace FlightManagementSystem
                 }
             }
             Console.Write("Choose Pilot ID: ");
-            int pilotId = int.Parse(Console.ReadLine());
+            int pilotId;
+
+            while (!int.TryParse(Console.ReadLine(), out pilotId))
+            {
+                Console.Write("Invalid Pilot ID. Enter again: ");
+            }
             Pilot selectPilot = null;
             foreach (var pilot in FlightContext.Pilots)
             {
@@ -224,6 +233,13 @@ namespace FlightManagementSystem
                 flight.departureDate = Console.ReadLine();
                 Console.Write("Departure Time: ");
                 flight.departureTime = Console.ReadLine();
+                Console.Write("Flight Duration (Hours): ");
+                int duration;
+                while (!int.TryParse(Console.ReadLine(), out duration) || duration <= 0)
+                {
+                    Console.Write("Invalid duration. Enter again: ");
+                }
+                flight.flightDuration = duration;
                 Console.Write("Ticket Price: ");
                 flight.ticketPrice = decimal.Parse(Console.ReadLine());
                 // Seats come from aircraft
@@ -252,9 +268,13 @@ namespace FlightManagementSystem
                 return;
             }         
             Console.WriteLine("Enter passenger ID: " );
-            int passengerId = int.Parse(Console.ReadLine());
-            Passenger selectedPassenger = null;
+            int passengerId;
 
+            while (!int.TryParse(Console.ReadLine(), out passengerId))
+            {
+                Console.Write("Invalid Passenger ID. Enter again: ");
+            }
+            Passenger selectedPassenger = null;
             foreach (var passenger in FlightContext.Passengers)
             {
                 if (passenger.passengerId == passengerId)
@@ -281,10 +301,12 @@ namespace FlightManagementSystem
                 }
             }
             Console.Write("Choose Flight ID: ");
-            int flightId = int.Parse(Console.ReadLine());
-
+            int flightId;
+            while (!int.TryParse(Console.ReadLine(), out flightId))
+            {
+                Console.Write("Invalid Flight ID. Enter again: ");
+            }
             Flight selectedFlight = null;
-
             foreach (var flight in FlightContext.Flights)
             {
                 if (flight.flightId == flightId &&flight.status == "Scheduled" &&flight.availableSeats > 0)
@@ -305,8 +327,7 @@ namespace FlightManagementSystem
             booking.flightId = selectedFlight.flightId;
             // Simple seat label generation
             booking.seatNumber = "A" + selectedFlight.availableSeats;
-            Console.Write("Booking Date: ");
-            booking.bookingDate = Console.ReadLine();
+            booking.bookingDate = DateTime.Now.ToString();
             // Take price from flight ticket price
             booking.totalPrice = selectedFlight.ticketPrice;
             booking.status = "Confirmed";
@@ -332,7 +353,11 @@ namespace FlightManagementSystem
                 );
             }
             Console.Write("Enter Booking ID to cancel: ");
-            int bookingId = int.Parse(Console.ReadLine());
+            int bookingId;
+            while (!int.TryParse(Console.ReadLine(), out bookingId))
+            {
+                Console.Write("Invalid Booking ID. Enter again: ");
+            }
             Booking selectedBooking = null;
             foreach (var booking in FlightContext.Bookings)
             {
@@ -382,7 +407,11 @@ namespace FlightManagementSystem
                 }
             }
             Console.Write("Enter Flight ID: ");
-            int flightId = int.Parse(Console.ReadLine());
+            int flightId;
+            while (!int.TryParse(Console.ReadLine(), out flightId))
+            {
+                Console.Write("Invalid Flight ID. Enter again: ");
+            }
             Flight selectedFlight = null;
             foreach (var flight in FlightContext.Flights)
             {
@@ -399,10 +428,7 @@ namespace FlightManagementSystem
             }
             // Change flight status
             selectedFlight.status = "Departed";
-            // Ask for flight duration
-            Console.Write("Enter Flight Hours: ");
-            int hours = int.Parse(Console.ReadLine());
-
+            int hours = selectedFlight.flightDuration;
             // Update pilot flight hours
             foreach (var pilot in FlightContext.Pilots)
             {
@@ -410,7 +436,7 @@ namespace FlightManagementSystem
                 {
                     pilot.flightHours += hours;
                     // Pilot becomes available again
-                    pilot.isAvailable = true;
+                    pilot.isAvailable = false;
                 }
             }
             Console.WriteLine("Flight departed successfully");
@@ -423,7 +449,11 @@ namespace FlightManagementSystem
                 return;
             }
             Console.Write("Enter Flight ID to cancel: ");
-            int flightId = int.Parse(Console.ReadLine());
+            int flightId;
+            while (!int.TryParse(Console.ReadLine(), out flightId))
+            {
+                Console.Write("Invalid Flight ID. Enter again: ");
+            }
             Flight selectedFlight = null;
             foreach (var f in FlightContext.Flights)
             {

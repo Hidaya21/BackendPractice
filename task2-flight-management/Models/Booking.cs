@@ -6,12 +6,12 @@ namespace FlightManagementSystem.Models
 {
     public class Booking
     {
-        public int bookingId { get; set; }                // Unique identifier
-        public int passengerId { get; set; }              // Passenger ID
-        public int flightId { get; set; }                 // Flight ID
-        public string seatNumber { get; set; }            // Example: 14A
-        public string bookingDate { get; set; }           // Booking date
-        public decimal totalPrice { get; set; }           // Paid amount
-        public string status { get; set; }                // Confirmed | Cancelled
+        public int bookingId { get; set; }                // System generated
+        public int passengerId { get; set; }               // From list
+        public int flightId { get; set; }                  // From list
+        public string seatNumber { get; set; }             // System generated
+        public string bookingDate { get; set; }           
+        public decimal totalPrice { get; set; }           // Calculate
+        public string status { get; set; }                // Default Value
     }
 }
