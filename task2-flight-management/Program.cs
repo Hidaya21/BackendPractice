@@ -12,8 +12,7 @@ namespace FlightManagementSystem
             Aircrafts = new List<Aircraft>(),
             Flights = new List<Flight>(),
             Bookings = new List<Booking>()
-        };
-     
+        }; 
         public static void RegisterPassenger()
         {
             try
@@ -444,7 +443,7 @@ namespace FlightManagementSystem
                 if (pilot.pilotId == selectedFlight.pilotId)
                 {
                     pilot.flightHours += hours;
-                    // Pilot becomes available again
+                    // Pilot becomes unavailable
                     pilot.isAvailable = false;
                 }
             }
@@ -696,18 +695,13 @@ namespace FlightManagementSystem
                 int choice;
                 while (true)
                 {
-                    try
+                    Console.Write("Enter your choice: ");
+                    if (int.TryParse(Console.ReadLine(), out choice))
                     {
-                        Console.Write("Enter your choice: ");
-                        choice = int.Parse(Console.ReadLine());
-
                         break;
                     }
-                    catch
-                    {
-                        Console.WriteLine("Invalid input. Please enter a valid number.");
-                    }
-                }
+                    Console.WriteLine("Invalid input. Please enter a valid number."); 
+            }
                 switch (choice)
                 {
                     case 1:
