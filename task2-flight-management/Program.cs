@@ -5,12 +5,21 @@ namespace FlightManagementSystem
 {
     public class program
     {
+        public static FlightContext context = new FlightContext
+        {
+            Passengers = new List<Passenger>(),
+            Pilots = new List<Pilot>(),
+            Aircrafts = new List<Aircraft>(),
+            Flights = new List<Flight>(),
+            Bookings = new List<Booking>()
+        };
+     
         public static void RegisterPassenger()
         {
             try
             {
                 Passenger p = new Passenger();
-                p.passengerId = FlightContext.Passengers.Count + 1;
+                p.passengerId = context.Passengers.Count + 1;
                 // Name Validation
                 Console.Write("Enter Passenger Name: ");
                 p.passengerName = Console.ReadLine();
@@ -57,7 +66,7 @@ namespace FlightManagementSystem
                 }
 
                 // Save Passenger
-                FlightContext.Passengers.Add(p);
+                context.Passengers.Add(p);
 
                 Console.WriteLine("Passenger added successfully");
                 Console.WriteLine("Passenger ID = " + p.passengerId);
@@ -73,7 +82,7 @@ namespace FlightManagementSystem
             try
             {
                 Aircraft a = new Aircraft();
-                a.aircraftId = FlightContext.Aircrafts.Count + 1;
+                a.aircraftId = context.Aircrafts.Count + 1;
                 // Model Validation
                 Console.Write("Enter Aircraft Model: ");
                 a.model = Console.ReadLine();
@@ -94,7 +103,7 @@ namespace FlightManagementSystem
                 // Default Status
                 a.isOperational = true;
                 // Save Aircraft
-                FlightContext.Aircrafts.Add(a);
+                context.Aircrafts.Add(a);
                 Console.WriteLine("Aircraft added successfully");
                 Console.WriteLine("Aircraft ID: " + a.aircraftId);
             }
@@ -107,7 +116,7 @@ namespace FlightManagementSystem
         public static void RegisterPilot()
         {
             Pilot p = new Pilot();
-            p.pilotId = FlightContext.Pilots.Count + 1;
+            p.pilotId = context.Pilots.Count + 1;
             Console.Write("Name: ");
             p.pilotName = Console.ReadLine();
             Console.Write("Phone: ");
@@ -116,17 +125,17 @@ namespace FlightManagementSystem
             p.licenseNumber = Console.ReadLine();
             p.flightHours = 0;
             p.isAvailable = true;
-            FlightContext.Pilots.Add(p);
+            context.Pilots.Add(p);
             Console.WriteLine("Pilot added successfully. ID = " + p.pilotId);
         }
         public static void ViewAllFlights()
         {
-            if (FlightContext.Flights.Count == 0)
+            if (context.Flights.Count == 0)
             {
                 Console.WriteLine("No flights available.");
                 return;
             }
-            foreach (var f in FlightContext.Flights)
+            foreach (var f in context.Flights)
             {
                 Console.WriteLine("---------------");
                 Console.WriteLine("Flight Code: " + f.flightCode);
@@ -143,20 +152,20 @@ namespace FlightManagementSystem
         public static void ScheduleFlight()
         {
             // Check aircrafts
-            if (FlightContext.Aircrafts.Count == 0)
+            if (context.Aircrafts.Count == 0)
             {
                 Console.WriteLine("No aircrafts available.");
                 return;
             }
             // Check pilots
-            if (FlightContext.Pilots.Count == 0)
+            if (context.Pilots.Count == 0)
             {
                 Console.WriteLine("No pilots available.");
                 return;
             }
             Console.WriteLine("===== AVAILABLE AIRCRAFTS =====");
 
-            foreach (var aircraft in FlightContext.Aircrafts)
+            foreach (var aircraft in context.Aircrafts)
             {
                 if (aircraft.isOperational == true)
                 {
@@ -172,7 +181,7 @@ namespace FlightManagementSystem
                 Console.Write("Invalid Aircraft ID. Enter again: ");
             }
             Aircraft selectedAircraft = null;
-            foreach (var aircraft in FlightContext.Aircrafts)
+            foreach (var aircraft in context.Aircrafts)
             {
                 if (aircraft.aircraftId == aircraftId && aircraft.isOperational == true)
                 {
@@ -185,7 +194,7 @@ namespace FlightManagementSystem
                 return;
             }
             Console.WriteLine("===== AVAILABLE PILOTS =====");
-            foreach (var pilot in FlightContext.Pilots)
+            foreach (var pilot in context.Pilots)
             {
                 if (pilot.isAvailable == true)
                 {
@@ -202,7 +211,7 @@ namespace FlightManagementSystem
                 Console.Write("Invalid Pilot ID. Enter again: ");
             }
             Pilot selectPilot = null;
-            foreach (var pilot in FlightContext.Pilots)
+            foreach (var pilot in context.Pilots)
             {
                 if (pilot.pilotId == pilotId && pilot.pilotId == pilotId)
                 {
@@ -220,7 +229,7 @@ namespace FlightManagementSystem
                 }
                 Flight flight = new Flight();
                 // Generate a unique ID for the new flight
-                flight.flightId = FlightContext.Flights.Count + 1;
+                flight.flightId = context.Flights.Count + 1;
                 // Auto generate flight code
                 flight.flightCode = "OA-" + (200 + flight.flightId);
                 flight.aircraftId = selectedAircraft.aircraftId;
@@ -246,7 +255,7 @@ namespace FlightManagementSystem
                 flight.availableSeats = selectedAircraft.totalSeats;
                 // Default status
                 flight.status = "Scheduled";
-                FlightContext.Flights.Add(flight);
+                context.Flights.Add(flight);
                 // Pilot becomes unavailable
                 selectPilot.isAvailable = false;
                 Console.WriteLine("Flight scheduled successfully.");
@@ -256,13 +265,13 @@ namespace FlightManagementSystem
         public static void BookFlight()
         {
             // Check passengers
-            if (FlightContext.Passengers.Count == 0)
+            if (context.Passengers.Count == 0)
             {
                 Console.WriteLine("No passengers found.");
                 return;
             }
             // Check flights
-            if (FlightContext.Flights.Count == 0)
+            if (context.Flights.Count == 0)
             {
                 Console.WriteLine("No flights available.");
                 return;
@@ -275,7 +284,7 @@ namespace FlightManagementSystem
                 Console.Write("Invalid Passenger ID. Enter again: ");
             }
             Passenger selectedPassenger = null;
-            foreach (var passenger in FlightContext.Passengers)
+            foreach (var passenger in context.Passengers)
             {
                 if (passenger.passengerId == passengerId)
                 {
@@ -290,7 +299,7 @@ namespace FlightManagementSystem
             Console.Write("Enter Destination: ");
             string destination = Console.ReadLine();
             Console.WriteLine("===== AVAILABLE FLIGHTS =====");
-            foreach (var flight in FlightContext.Flights)
+            foreach (var flight in context.Flights)
             {
                 if (flight.destination.ToLower() == destination.ToLower() &&
                     flight.status == "Scheduled" &&
@@ -307,7 +316,7 @@ namespace FlightManagementSystem
                 Console.Write("Invalid Flight ID. Enter again: ");
             }
             Flight selectedFlight = null;
-            foreach (var flight in FlightContext.Flights)
+            foreach (var flight in context.Flights)
             {
                 if (flight.flightId == flightId &&flight.status == "Scheduled" &&flight.availableSeats > 0)
                 {
@@ -322,7 +331,7 @@ namespace FlightManagementSystem
             }
             Booking booking = new Booking();
             // Generate unique booking ID
-            booking.bookingId = FlightContext.Bookings.Count + 1;
+            booking.bookingId = context.Bookings.Count + 1;
             booking.passengerId = selectedPassenger.passengerId;
             booking.flightId = selectedFlight.flightId;
             // Simple seat label generation
@@ -331,7 +340,7 @@ namespace FlightManagementSystem
             // Take price from flight ticket price
             booking.totalPrice = selectedFlight.ticketPrice;
             booking.status = "Confirmed";
-            FlightContext.Bookings.Add(booking);
+            context.Bookings.Add(booking);
             // Decrease available seats
             selectedFlight.availableSeats--;
             Console.WriteLine("Booking confirmed successfully.");
@@ -340,13 +349,13 @@ namespace FlightManagementSystem
         public static void CancelBooking()
         {
             // Check bookings
-            if (FlightContext.Bookings.Count == 0)
+            if (context.Bookings.Count == 0)
             {
                 Console.WriteLine("No bookings found");
                 return;
             }
             Console.WriteLine("===== BOOKINGS =====");
-            foreach (var booking in FlightContext.Bookings)
+            foreach (var booking in context.Bookings)
             {
                 Console.WriteLine(
                     "Booking ID: " + booking.bookingId +" | Flight ID: " + booking.flightId +" | Status: " + booking.status
@@ -359,7 +368,7 @@ namespace FlightManagementSystem
                 Console.Write("Invalid Booking ID. Enter again: ");
             }
             Booking selectedBooking = null;
-            foreach (var booking in FlightContext.Bookings)
+            foreach (var booking in context.Bookings)
             {
                 if (booking.bookingId == bookingId)
                 {
@@ -380,7 +389,7 @@ namespace FlightManagementSystem
             // Change booking status
             selectedBooking.status = "Cancelled";
             // Return seat to flight
-            foreach (var flight in FlightContext.Flights)
+            foreach (var flight in context.Flights)
             {
                 if (flight.flightId == selectedBooking.flightId)
                 {
@@ -392,13 +401,13 @@ namespace FlightManagementSystem
         public static void DepartFlight()
         {
             // Check flights
-            if (FlightContext.Flights.Count == 0)
+            if (context.Flights.Count == 0)
             {
                 Console.WriteLine("No flights found.");
                 return;
             }
             Console.WriteLine("===== SCHEDULED FLIGHTS =====");
-            foreach (var flight in FlightContext.Flights)
+            foreach (var flight in context.Flights)
             {
                 if (flight.status == "Scheduled")
                 {
@@ -413,7 +422,7 @@ namespace FlightManagementSystem
                 Console.Write("Invalid Flight ID. Enter again: ");
             }
             Flight selectedFlight = null;
-            foreach (var flight in FlightContext.Flights)
+            foreach (var flight in context.Flights)
             {
                 if (flight.flightId == flightId &&flight.status == "Scheduled")
                 {
@@ -430,7 +439,7 @@ namespace FlightManagementSystem
             selectedFlight.status = "Departed";
             int hours = selectedFlight.flightDuration;
             // Update pilot flight hours
-            foreach (var pilot in FlightContext.Pilots)
+            foreach (var pilot in context.Pilots)
             {
                 if (pilot.pilotId == selectedFlight.pilotId)
                 {
@@ -443,7 +452,7 @@ namespace FlightManagementSystem
         }
         public static void CancelFlight()
         {
-            if (FlightContext.Flights.Count == 0)
+            if (context.Flights.Count == 0)
             {
                 Console.WriteLine("No flights found");
                 return;
@@ -455,7 +464,7 @@ namespace FlightManagementSystem
                 Console.Write("Invalid Flight ID. Enter again: ");
             }
             Flight selectedFlight = null;
-            foreach (var f in FlightContext.Flights)
+            foreach (var f in context.Flights)
             {
                 if (f.flightId == flightId)
                 {
@@ -475,7 +484,7 @@ namespace FlightManagementSystem
             selectedFlight.status = "Cancelled";
             int affectedBookings = 0;
             // cancel bookings
-            foreach (var b in FlightContext.Bookings)
+            foreach (var b in context.Bookings)
             {
                 if (b.flightId == flightId && b.status == "Confirmed")
                 {
@@ -485,7 +494,7 @@ namespace FlightManagementSystem
                 }
             }
            // return pilot
-            foreach (var p in FlightContext.Pilots)
+            foreach (var p in context.Pilots)
             {
                 if (p.pilotId == selectedFlight.pilotId)
                 {
@@ -500,13 +509,13 @@ namespace FlightManagementSystem
             try
             {
                 // Check if there are passengers
-                if (FlightContext.Passengers.Count == 0)
+                if (context.Passengers.Count == 0)
                 {
                     Console.WriteLine("No passengers found.");
                     return;
                 }
                 // Check if there are bookings
-                if (FlightContext.Bookings.Count == 0)
+                if (context.Bookings.Count == 0)
                 {
                     Console.WriteLine("No bookings found.");
                     return;
@@ -521,7 +530,7 @@ namespace FlightManagementSystem
                 // Find passenger
                 Passenger selectedPassenger = null;
 
-                foreach (var passenger in FlightContext.Passengers)
+                foreach (var passenger in context.Passengers)
                 {
                     if (passenger.passengerId == passengerId)
                     {
@@ -538,13 +547,13 @@ namespace FlightManagementSystem
                 bool hasBookings = false;
                 decimal totalSpent = 0;
                 // Loop through bookings
-                foreach (var booking in FlightContext.Bookings)
+                foreach (var booking in context.Bookings)
                 {
                     if (booking.passengerId == passengerId)
                     {
                         hasBookings = true;
                         // Find related flight
-                        foreach (var flight in FlightContext.Flights)
+                        foreach (var flight in context.Flights)
                         {
                             if (flight.flightId == booking.flightId)
                             {
@@ -595,7 +604,7 @@ namespace FlightManagementSystem
         {
             try
             {
-                if (FlightContext.Flights.Count == 0)
+                if (context.Flights.Count == 0)
                 {
                     Console.WriteLine("No flights found.");
                     return;
@@ -605,7 +614,7 @@ namespace FlightManagementSystem
                 List<(Flight flight, int confirmedBookings, decimal revenue, double loadFactor)> report
                     = new List<(Flight, int, decimal, double)>();
 
-                foreach (var flight in FlightContext.Flights)
+                foreach (var flight in context.Flights)
                 {
                     int confirmedBookings = 0;
 
@@ -613,7 +622,7 @@ namespace FlightManagementSystem
 
                     int totalSeats = 0;
                     // Find aircraft seats
-                    foreach (var aircraft in FlightContext.Aircrafts)
+                    foreach (var aircraft in context.Aircrafts)
                     {
                         if (aircraft.aircraftId == flight.aircraftId)
                         {
@@ -622,7 +631,7 @@ namespace FlightManagementSystem
                         }
                     }
                     // Calculate bookings and revenue
-                    foreach (var booking in FlightContext.Bookings)
+                    foreach (var booking in context.Bookings)
                     {
                         if (booking.flightId == flight.flightId &&
                             booking.status == "Confirmed")
