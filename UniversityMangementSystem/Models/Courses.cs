@@ -23,7 +23,7 @@ namespace UniversityManagementSystem.Models
         // Navigation Property 
         // Each course belongs to one department
         [ForeignKey("departmentId")]
-        public Department department { get; set; }//navigation property 
+        public Department department { get; set; }
         // Nullable Foreign Key for Instructor 
         // A course may or may not have an instructor assigned
         public int? instructorId { get; set; } // foreign key
