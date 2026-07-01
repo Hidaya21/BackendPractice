@@ -29,5 +29,6 @@ namespace UniversityManagementSystem.Models
 
         [Required, MaxLength(20)]
         public string status { get; set; } = "In Progress"; // default value
+
     }
 }
