@@ -17,20 +17,15 @@ namespace UniversityManagementSystem.Models
         [Required, MaxLength(150)]
         public string courseTitle { get; set; }// user input
         [Required, Range(1, 6)]
-        public int creditHours { get; set; }// user input
-        // Foreign Key for Department table
-        public int departmentId { get; set; }// foreign key
-        // Navigation Property 
-        // Each course belongs to one department
-        [ForeignKey("departmentId")]
-        public Department department { get; set; }
+        public int creditHours { get; set; }// user input                                         
+        [ForeignKey("Department")]
+        public int departmentId { get; set; }   // Foreign Key
+        public  Department Department { get; set; }
         // Nullable Foreign Key for Instructor 
         // A course may or may not have an instructor assigned
-        public int? instructorId { get; set; } // foreign key
-        // Navigation Property 
-        // Links course to instructor
-        [ForeignKey("instructorId")]
-        public Instructor? instructor { get; set; }//navigation property 
+        [ForeignKey("Instructor")]
+        public int? instructorId { get; set; }   // Foreign Key
+        public Instructor Instructor { get; set; } // Navigation Property
         [Required, MaxLength(20)]
         public string semesterOffered { get; set; }// user input
         // Navigation Property 
