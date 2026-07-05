@@ -8,7 +8,7 @@ namespace UniversityManagementSystem.Models
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int instructorId { get; set; }   // system generated
-        [ MaxLength(100)]
+        [Required, MaxLength(100)]
         public string fullName { get; set; } // user input
         [Required, MaxLength(150)]
         public string email { get; set; }// user input
