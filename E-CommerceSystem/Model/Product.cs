@@ -20,7 +20,7 @@ namespace E_CommerceSystem.Model
         [Required]
         [Column(TypeName = "decimal(10,2)")]
         [Range(0.01, double.MaxValue)]
-        public double price { get; set; }                 // user input
+        public decimal price { get; set; }                 // user input
         [Required]
         [Range(0, int.MaxValue)]
         public int stockQuantity { get; set; } = 0;        // default value 

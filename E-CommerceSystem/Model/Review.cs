@@ -21,9 +21,9 @@ namespace E_CommerceSystem.Model
             public DateTime reviewDate { get; set; }           // system generated 
             // foreign key 
             [Required]
-            [ForeignKey("U")]
+            [ForeignKey("User")]
             public int userId { get; set; }                   // from list 
-            public User U { get; set; }                    // navigation property
+            public User User { get; set; }                    // navigation property
             // foreign key
             [Required]
             [ForeignKey("product")]
