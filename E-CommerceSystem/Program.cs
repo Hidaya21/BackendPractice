@@ -18,10 +18,8 @@ namespace E_CommerceSystem
             {
                 Console.Write("Enter Name: ");
                 user.Name = Console.ReadLine();
-
                 if (!string.IsNullOrWhiteSpace(user.Name))
                     break;
-
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Name cannot be empty!");
                 Console.ResetColor();
@@ -42,7 +40,6 @@ namespace E_CommerceSystem
             {
                 Console.Write("Enter Email: ");
                 user.email = Console.ReadLine();
-
                 if (!string.IsNullOrWhiteSpace(user.email) && user.email.Contains("@"))
                     break;
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -54,13 +51,11 @@ namespace E_CommerceSystem
             {
                 Console.Write("Enter Password: ");
                 string password = Console.ReadLine();
-
                 if (!string.IsNullOrWhiteSpace(password) && password.Length >= 6)
                 {
                     user.passwordHash = password;
                     break;
                 }
-
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Password must be at least 6 characters!");
                 Console.ResetColor();
@@ -70,10 +65,8 @@ namespace E_CommerceSystem
             {
                 Console.Write("Enter Phone Number: ");
                 user.phoneNumber = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(user.phoneNumber) &&
-                    user.phoneNumber.All(char.IsDigit))
+                if (!string.IsNullOrWhiteSpace(user.phoneNumber) && user.phoneNumber.All(char.IsDigit))
                     break;
-
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Phone number must contain only digits!");
                 Console.ResetColor();
@@ -83,10 +76,8 @@ namespace E_CommerceSystem
             {
                 Console.Write("Enter Address: ");
                 user.address = Console.ReadLine();
-
                 if (!string.IsNullOrWhiteSpace(user.address))
                     break;
-
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Address cannot be empty!");
                 Console.ResetColor();
@@ -99,6 +90,61 @@ namespace E_CommerceSystem
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("User registered successfully!");
             Console.WriteLine("User ID = " + user.userId);
+            Console.ResetColor();
+        }
+        public static void AddProduct()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("=== Add New Product ===");
+            Console.ResetColor();
+            // Display all categories
+            var categories = context.Categories.ToList();
+            if (categories.Count == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("No categories available!");
+                Console.ResetColor();
+                return;
+            }
+            Console.WriteLine("Available Categories:");
+            foreach (var category in categories)
+            {
+                Console.WriteLine(category.categoryId + " - " + category.categoryName);
+            }
+            // Read category selection
+            Console.Write("Choose Category ID: ");
+            int categoryId = int.Parse(Console.ReadLine());
+            var selectedCategory = categories.FirstOrDefault(c => c.categoryId == categoryId);
+            if (selectedCategory == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Category not found!");
+                Console.ResetColor();
+                return;
+            }
+            // Create product
+            Product product = new Product();
+            Console.Write("Enter Product Name: ");
+            product.productName = Console.ReadLine();
+            Console.Write("Enter Description: ");
+            product.description = Console.ReadLine();
+            Console.Write("Enter Price: ");
+            product.price = double.Parse(Console.ReadLine());
+            Console.Write("Enter Stock Quantity: ");
+            product.stockQuantity = int.Parse(Console.ReadLine());
+            Console.Write("Enter Image URL: ");
+            product.imageUrl = Console.ReadLine();
+            // Set category
+            product.categoryId = selectedCategory.categoryId;
+            // Auto generated values
+            product.createdAt = DateTime.Now;
+            product.isAvailable = true;
+            // Save product
+            context.Products.Add(product);
+            context.SaveChanges();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Product added successfully!");
+            Console.WriteLine("Product ID = " + product.productId);
             Console.ResetColor();
         }
         static void Main(string[] args)
@@ -132,53 +178,47 @@ namespace E_CommerceSystem
                 }
                 switch (choice)
                 {
-                    case 1:
-                        Console.WriteLine("==== Register a New User ====");
+                    case 1: 
                         RegisterUser();
                         break;
                     case 2:
-                        Console.WriteLine("====Add a New Product to a Category ====");
-
+                        AddProduct();
                         break;
                     case 3:
-                        Console.WriteLine("====  Place an Order ====");
-
+                        
                         break;
                     case 4:
-                        Console.WriteLine("==== Write a Product Review ====");
+                        
 
                         break;
                     case 5:
-                        Console.WriteLine("==== Update Product Price and Availability ====");
+                       
 
                         break;
                     case 6:
-                        Console.WriteLine("==== Cancel an Order ====");
+                       
 
                         break;
                     case 7:
-                        Console.WriteLine("==== Delete a Review ====");
+                     
 
                         break;
                     case 8:
-                        Console.WriteLine("==== View All Products ====");
-
+                       
                         break;
                     case 9:
-                        Console.WriteLine("====  Filter Products by Category and Price Range ====");
+                  
 
                         break;
                     case 10:
-                        Console.WriteLine("==== Get Category with All Its Products  ====");
 
                         break;
                     case 11:
-                        Console.WriteLine("==== View Order History with Full Details ====");
+                        
 
                         break;
                     case 12:
-                        Console.WriteLine("====  Product Summary Report ====");
-
+                      
                         break;
                     case 0:
                         return;
