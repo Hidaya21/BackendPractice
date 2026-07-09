@@ -432,6 +432,34 @@ namespace E_CommerceSystem
             Console.WriteLine("Review deleted successfully");
             Console.ResetColor();
         }
+        public static void ViewAllProducts()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("=== All Products ===");
+            Console.ResetColor();
+            // Get all products
+            var products = context.Products.ToList();
+            if (products.Count == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("No products found.");
+                Console.ResetColor();
+                return;
+            }
+            // Display products
+            foreach (var product in products)
+            {
+                string status = product.stockQuantity > 0? "Available": "Out of Stock";
+
+                Console.WriteLine("-------------------------------------");
+                Console.WriteLine("Product ID : " + product.productId);
+                Console.WriteLine("Name       : " + product.productName);
+                Console.WriteLine("Price      : " + product.price);
+                Console.WriteLine("Stock      : " + product.stockQuantity);
+                Console.WriteLine("Status     : " + status);
+            }
+            Console.WriteLine("-------------------------------------");
+        }
         static void Main(string[] args)
         {
             while (true)
@@ -486,7 +514,7 @@ namespace E_CommerceSystem
                         DeleteReview();
                         break;
                     case 8:
-                       
+                        ViewAllProducts();
                         break;
                     case 9:
                   
