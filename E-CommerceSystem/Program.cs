@@ -460,6 +460,73 @@ namespace E_CommerceSystem
             }
             Console.WriteLine("-------------------------------------");
         }
+        public static void FilterProducts()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("=== Filter Products ===");
+            Console.ResetColor();
+            // Display Categories
+            Console.WriteLine("Available Categories:");
+            foreach (var category in context.Categories.ToList())
+            {
+                Console.WriteLine(category.categoryId+" - " + category.categoryName);
+            }
+            // Category ID
+            Console.Write("Enter Category ID: ");
+            if (!int.TryParse(Console.ReadLine(), out int categoryId))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid Category ID.");
+                Console.ResetColor();
+                return;
+            }
+            // Minimum Price
+            Console.Write("Enter Minimum Price: ");
+            if (!decimal.TryParse(Console.ReadLine(), out decimal minPrice))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid Minimum Price.");
+                Console.ResetColor();
+                return;
+            }
+            // Maximum Price
+            Console.Write("Enter Maximum Price: ");
+            if (!decimal.TryParse(Console.ReadLine(), out decimal maxPrice))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid Maximum Price.");
+                Console.ResetColor();
+                return;
+            }
+            // Filter Products
+            var products = context.Products
+                .Where(p => p.categoryId == categoryId && p.price >= minPrice &&p.price <= maxPrice)
+                .OrderBy(p => p.price)
+                .ToList();
+
+            if (products.Count == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("No matching products found.");
+                Console.ResetColor();
+                return;
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Filtered Products:");
+            Console.ResetColor();
+            foreach (var product in products)
+            {
+                string status = product.stockQuantity > 0? "Available": "Out of Stock";
+                Console.WriteLine("-------------------------------------");
+                Console.WriteLine("Product ID : " + product.productId);
+                Console.WriteLine("Name       : " + product.productName);
+                Console.WriteLine("Price      : "+ product.price);
+                Console.WriteLine("Stock      : "+product.stockQuantity);
+                Console.WriteLine("Status     : " +  status);
+            }
+            Console.WriteLine("-------------------------------------");
+        }
         static void Main(string[] args)
         {
             while (true)
@@ -517,7 +584,7 @@ namespace E_CommerceSystem
                         ViewAllProducts();
                         break;
                     case 9:
-                  
+                        FilterProducts();
                         break;
                     case 10:
 
