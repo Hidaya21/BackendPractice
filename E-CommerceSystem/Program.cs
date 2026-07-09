@@ -339,6 +339,62 @@ namespace E_CommerceSystem
             Console.WriteLine("New Price: " + product.price);
             Console.WriteLine("New Availability: " + product.isAvailable );
         }
+        public static void CancelOrder()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("=== Cancel Order ===");
+            Console.ResetColor();
+            // Display Orders
+            Console.WriteLine("Available Orders:");
+            foreach (var order in context.Orders.ToList())
+            {
+                Console.WriteLine($"Order ID: {order.orderId} | Customer ID: {order.userId} | Status: {order.status}");
+            }
+            Console.Write("Enter Order ID: ");
+            if (!int.TryParse(Console.ReadLine(), out int orderId))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid Order ID.");
+                Console.ResetColor();
+                return;
+            }
+            // Find Order
+            Order orderToCancel = context.Orders.FirstOrDefault(o => o.orderId == orderId);
+            if (orderToCancel == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Order not found.");
+                Console.ResetColor();
+                return;
+            }
+            // Check if already cancelled
+            if (orderToCancel.status == "Cancelled")
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("This order has already been cancelled.");
+                Console.ResetColor();
+                return;
+            }
+            // Load Order Items
+            var orderItems = context.OrderItems.Where(oi => oi.orderId == orderId).ToList();
+
+            // Restore Stock
+            foreach (var item in orderItems)
+            {
+                Product product = context.Products.FirstOrDefault(p => p.productId == item.productId);
+                if (product != null)
+                {
+                    product.stockQuantity += item.quantity;
+                }
+            }
+            // Update Status
+            orderToCancel.status = "Cancelled";
+            // Save Changes
+            context.SaveChanges();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Order cancelled successfully.");
+            Console.ResetColor();
+        }
         static void Main(string[] args)
         {
             while (true)
@@ -386,7 +442,7 @@ namespace E_CommerceSystem
                         UpdateProductPriceAndAvailability();
                         break;
                     case 6:
-                       
+                        UpdateProductPriceAndAvailability();
                         break;
                     case 7:
                      
