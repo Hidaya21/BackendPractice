@@ -348,7 +348,7 @@ namespace E_CommerceSystem
             Console.WriteLine("Available Orders:");
             foreach (var order in context.Orders.ToList())
             {
-                Console.WriteLine($"Order ID: {order.orderId} | Customer ID: {order.userId} | Status: {order.status}");
+                Console.WriteLine("Order ID: " + order.orderId +" | Customer ID: " + order.userId + " | Status: " + order.status);
             }
             Console.Write("Enter Order ID: ");
             if (!int.TryParse(Console.ReadLine(), out int orderId))
@@ -377,7 +377,6 @@ namespace E_CommerceSystem
             }
             // Load Order Items
             var orderItems = context.OrderItems.Where(oi => oi.orderId == orderId).ToList();
-
             // Restore Stock
             foreach (var item in orderItems)
             {
@@ -442,7 +441,7 @@ namespace E_CommerceSystem
                         UpdateProductPriceAndAvailability();
                         break;
                     case 6:
-                        UpdateProductPriceAndAvailability();
+                        CancelOrder();
                         break;
                     case 7:
                      
