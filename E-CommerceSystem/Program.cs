@@ -537,11 +537,9 @@ namespace E_CommerceSystem
 
             foreach (var category in context.Categories.ToList())
             {
-                Console.WriteLine($"{category.categoryId} - {category.categoryName}");
+                Console.WriteLine(category.categoryId + " - " + category.categoryName);
             }
-
             Console.Write("Enter Category ID: ");
-
             if (!int.TryParse(Console.ReadLine(), out int categoryId))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -551,7 +549,6 @@ namespace E_CommerceSystem
             }
             // Get Category with Products
             Category categoryData = context.Categories.Include(c => c.Products).FirstOrDefault(c => c.categoryId == categoryId);
-
             if (categoryData == null)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -572,7 +569,6 @@ namespace E_CommerceSystem
                 Console.WriteLine("No products in this category.");
                 return;
             }
-
             foreach (var product in categoryData.Products)
             {
                 string status = product.stockQuantity > 0 ? "Available": "Out of Stock";
@@ -583,8 +579,76 @@ namespace E_CommerceSystem
                 Console.WriteLine($"Stock      : {product.stockQuantity}");
                 Console.WriteLine($"Status     : {status}");
             }
-
             Console.WriteLine("-------------------------------------");
+        }
+        public static void ViewOrderHistory()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("=== View Order History ===");
+            Console.ResetColor();
+
+            // Display Users
+            Console.WriteLine("Available Users:");
+            foreach (var user in context.Users.ToList())
+            {
+                Console.WriteLine(user.userId+ " - " + user.Name);
+            }
+
+            Console.Write("Enter User ID: ");
+            if (!int.TryParse(Console.ReadLine(), out int userId))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid User ID.");
+                Console.ResetColor();
+                return;
+            }
+
+            // Load User with Orders, OrderItems and Products
+            User userData = context.Users
+                .Include(u => u.Orders)
+                .ThenInclude(o => o.OrderItems)
+                .ThenInclude(i => i.Product)
+                .FirstOrDefault(u => u.userId == userId);
+
+            if (userData == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("User not found.");
+                Console.ResetColor();
+                return;
+            }
+            if (userData.Orders.Count == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("This user has no orders.");
+                Console.ResetColor();
+                return;
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Order History for " + userData.Name);
+            Console.ResetColor();
+
+            foreach (var order in userData.Orders)
+            {
+                Console.WriteLine("-------------------------------------");
+                Console.WriteLine($"Order ID   : {order.orderId}");
+                Console.WriteLine($"Date       : {order.orderDate}");
+                Console.WriteLine($"Status     : {order.status}");
+                Console.WriteLine($"Total      : {order.totalAmount}");
+
+                Console.WriteLine("Products:");
+
+                foreach (var item in order.OrderItems)
+                {
+                    Console.WriteLine("- "+ item.Product.productName);
+                    Console.WriteLine("  Quantity   : " + item.quantity);
+                    Console.WriteLine("  Unit Price : " + item.unitPrice);
+                    Console.WriteLine("  Subtotal   : " + item.quantity * item.unitPrice);
+                }
+
+                Console.WriteLine("-------------------------------------");
+            }
         }
         static void Main(string[] args)
         {
@@ -649,7 +713,7 @@ namespace E_CommerceSystem
                         GetCategoryWithProducts();
                         break;
                     case 11:
-
+                        ViewOrderHistory();
                         break;
                     case 12:
                       
