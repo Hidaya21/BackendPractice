@@ -1,6 +1,7 @@
 ﻿using E_CommerceSystem;
 using E_CommerceSystem.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace E_CommerceSystem
 {
@@ -394,6 +395,43 @@ namespace E_CommerceSystem
             Console.WriteLine("Order cancelled successfully.");
             Console.ResetColor();
         }
+        public static void DeleteReview()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("=== Delete Review ===");
+            Console.ResetColor();
+            // Display Reviews
+            Console.WriteLine("Available Reviews:");
+            foreach (var review in context.Reviews.ToList())
+            {
+                Console.WriteLine("Review ID: " + review.reviewId + " | Product ID: " + review.productId + "| Rating: " + review.rating);
+            }
+            Console.Write("Enter Review ID to delete: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int reviewId))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid Review ID.");
+                Console.ResetColor();
+                return;
+            }
+            // Find Review
+            Review reviewToDelete = context.Reviews.FirstOrDefault(r => r.reviewId == reviewId);
+            if (reviewToDelete == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Review not found.");
+                Console.ResetColor();
+                return;
+            }
+            // Delete Review
+            context.Reviews.Remove(reviewToDelete);
+            // Save Changes
+            context.SaveChanges();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Review deleted successfully");
+            Console.ResetColor();
+        }
         static void Main(string[] args)
         {
             while (true)
@@ -423,6 +461,7 @@ namespace E_CommerceSystem
                     }
                     Console.WriteLine("Invalid input.Please enter a valid number.");
                 }
+                
                 switch (choice)
                 {
                     case 1: 
@@ -444,7 +483,7 @@ namespace E_CommerceSystem
                         CancelOrder();
                         break;
                     case 7:
-                     
+                        DeleteReview();
                         break;
                     case 8:
                        
