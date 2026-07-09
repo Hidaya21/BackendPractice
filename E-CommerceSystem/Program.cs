@@ -527,6 +527,65 @@ namespace E_CommerceSystem
             }
             Console.WriteLine("-------------------------------------");
         }
+        public static void GetCategoryWithProducts()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("=== Category with Products ===");
+            Console.ResetColor();
+            // Display Categories
+            Console.WriteLine("Available Categories:");
+
+            foreach (var category in context.Categories.ToList())
+            {
+                Console.WriteLine($"{category.categoryId} - {category.categoryName}");
+            }
+
+            Console.Write("Enter Category ID: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int categoryId))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid Category ID.");
+                Console.ResetColor();
+                return;
+            }
+            // Get Category with Products
+            Category categoryData = context.Categories.Include(c => c.Products).FirstOrDefault(c => c.categoryId == categoryId);
+
+            if (categoryData == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Category not found.");
+                Console.ResetColor();
+                return;
+            }
+            // Display Category Details
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Category Details");
+            Console.ResetColor();
+            Console.WriteLine($"Category ID   : {categoryData.categoryId}");
+            Console.WriteLine($"Name          : {categoryData.categoryName}");
+            Console.WriteLine($"Description   : {categoryData.description}");
+            Console.WriteLine("Products:");
+            if (categoryData.Products.Count == 0)
+            {
+                Console.WriteLine("No products in this category.");
+                return;
+            }
+
+            foreach (var product in categoryData.Products)
+            {
+                string status = product.stockQuantity > 0 ? "Available": "Out of Stock";
+                Console.WriteLine("-------------------------------------");
+                Console.WriteLine($"Product ID : {product.productId}");
+                Console.WriteLine($"Name       : {product.productName}");
+                Console.WriteLine($"Price      : {product.price}");
+                Console.WriteLine($"Stock      : {product.stockQuantity}");
+                Console.WriteLine($"Status     : {status}");
+            }
+
+            Console.WriteLine("-------------------------------------");
+        }
         static void Main(string[] args)
         {
             while (true)
@@ -587,7 +646,7 @@ namespace E_CommerceSystem
                         FilterProducts();
                         break;
                     case 10:
-
+                        GetCategoryWithProducts();
                         break;
                     case 11:
 
