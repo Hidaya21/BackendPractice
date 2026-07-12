@@ -64,12 +64,18 @@ namespace E_CommerceSystem
             // Phone validation
             while (true)
             {
-                Console.Write("Enter Phone Number: ");
+                Console.Write("Enter Phone Number (Optional): ");
                 user.phoneNumber = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(user.phoneNumber) && user.phoneNumber.All(char.IsDigit))
+                if (string.IsNullOrWhiteSpace(user.phoneNumber))
+                {
                     break;
+                }
+                if (user.phoneNumber.All(char.IsDigit) && user.phoneNumber.Length <= 20)
+                {
+                    break;
+                }
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Phone number must contain only digits!");
+                Console.WriteLine("Phone number must contain only digits and maximum 20 characters!");
                 Console.ResetColor();
             }
             // Address validation
@@ -290,9 +296,7 @@ namespace E_CommerceSystem
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Rating must be between 1 and 5.");
                 Console.ResetColor();
-            }
-            Console.Write("Enter Review ID: ");
-            review.reviewId = int.Parse(Console.ReadLine());
+            } 
             // Comment
             Console.Write("Enter Comment (optional): ");
             review.comment = Console.ReadLine();
