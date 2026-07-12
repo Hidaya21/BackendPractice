@@ -1,0 +1,25 @@
+﻿using E_CommerceSystem.Model;
+using Microsoft.EntityFrameworkCore;
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace E_CommerceSystem
+{
+    public class ECommerceContext:DbContext
+    {
+        public DbSet<User> Users { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public  DbSet<Product> Products { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public  DbSet<Review> Reviews { get; set; }  
+
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Server=.;Database=ECommerceDB;Trusted_Connection=True;TrustServerCertificate=True;");
+        }
+    }
+}
