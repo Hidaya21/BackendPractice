@@ -23,11 +23,11 @@ namespace E_CommerceSystem.Model
             [Required]
             [ForeignKey("User")]
             public int userId { get; set; }                   // from list 
-            public User User { get; set; }                    // navigation property
+            public virtual User User { get; set; }                    // navigation property
             // foreign key
             [Required]
             [ForeignKey("product")]
             public int productId { get; set; }                // from list 
-            public Product product { get; set; }
+            public virtual Product product { get; set; }
         }
 }

@@ -29,7 +29,7 @@ namespace E_CommerceSystem.Model
         public string? address { get; set; }              // user input
         public DateTime? registrationDate { get; set; }  // system generated — set to today's date
         public bool isActive { get; set; } = true;      // default value    
-        public List<Review> Reviews { get; set; } // reverse navigation — one User writes many Reviews
-        public List<Order> Orders { get; set; }  // reverse navigation — one User places many Orders
+        public virtual List<Review> Reviews { get; set; } // reverse navigation — one User writes many Reviews
+        public virtual List<Order> Orders { get; set; }  // reverse navigation — one User places many Orders
     }
 }

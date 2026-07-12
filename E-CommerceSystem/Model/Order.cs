@@ -31,7 +31,7 @@ namespace E_CommerceSystem.Model
         [Required]
         [ForeignKey("user")]
         public int userId { get; set; }                   // from list 
-        public User user { get; set; }                    // navigation property
-        public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();// reverse navigation 
+        public virtual User user { get; set; }                    // navigation property
+        public virtual List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();// reverse navigation 
     }
 }

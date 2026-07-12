@@ -650,6 +650,64 @@ namespace E_CommerceSystem
                 Console.WriteLine("-------------------------------------");
             }
         }
+        public static void ProductSummaryReport()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("=== Product Summary Report ===");
+            Console.ResetColor();
+
+            // ---------------------------
+            // Part A : Projection
+            // ---------------------------
+
+            var report = context.Products
+                .Select(p => new
+                {
+                    ProductName = p.productName,
+                    CategoryName = p.category.categoryName,
+                    ReviewCount = p.Reviews.Count(),
+                    AvgRating = p.Reviews.Any()? p.Reviews.Average(r => r.rating): 0,Stock = p.stockQuantity}).ToList();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Product Summary");
+            Console.ResetColor();
+
+            foreach (var item in report)
+            {
+                Console.WriteLine("-------------------------------------");
+                Console.WriteLine($"Product Name : {item.ProductName}");
+                Console.WriteLine($"Category     : {item.CategoryName}");
+                Console.WriteLine($"Reviews      : {item.ReviewCount}");
+                Console.WriteLine($"Average Rate : {item.AvgRating:F2}");
+                Console.WriteLine($"Stock        : {item.Stock}");
+            }
+
+            Console.WriteLine("-------------------------------------");
+
+            // ---------------------------
+            // Part B : Lazy Loading Demo
+            // ---------------------------
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("\n=== Lazy Loading Demo ===");
+            Console.ResetColor();
+            Product product = context.Products.FirstOrDefault();
+            if (product != null)
+            {
+                Console.WriteLine($"Product: {product.productName}");
+
+                // ============================================
+                // SECOND SQL QUERY FIRES HERE
+                // because Reviews were NOT loaded using Include()
+                // ============================================
+
+                Console.WriteLine($"Review Count: {product.Reviews.Count}");
+
+                foreach (var review in product.Reviews)
+                {
+                    Console.WriteLine($"Rating: {review.rating} | Comment: {review.comment}");
+                }
+            }
+        }
         static void Main(string[] args)
         {
             while (true)
@@ -716,7 +774,7 @@ namespace E_CommerceSystem
                         ViewOrderHistory();
                         break;
                     case 12:
-                      
+                        ProductSummaryReport();
                         break;
                     case 0:
                         return;

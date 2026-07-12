@@ -19,6 +19,6 @@ namespace E_CommerceSystem.Model
         public string description { get; set; }            // user input
         [MaxLength(300)]
         public string imageUrl { get; set; }               // user input
-        public List<Product> Products { get; set; }       // reverse navigation
+        public virtual List<Product> Products { get; set; }       // reverse navigation
     }
 }

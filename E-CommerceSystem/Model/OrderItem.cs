@@ -20,12 +20,12 @@ namespace E_CommerceSystem.Model
         [Required]
         [ForeignKey("Order")]
         public int orderId { get; set; }                  // system generated
-        public Order Order { get; set; }                  // navigation property
+        public virtual Order Order { get; set; }                  // navigation property
         // foreign key 
         [Required]
         [ForeignKey("Product")]
         public int productId { get; set; }                // from list 
-        public Product Product { get; set; }              // navigation property
+        public virtual  Product Product { get; set; }              // navigation property
         [Required]
         [Column(TypeName = "decimal(10,2)")]
         public decimal unitPrice { get; set; }

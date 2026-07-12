@@ -33,8 +33,8 @@ namespace E_CommerceSystem.Model
         [Required]
         [ForeignKey("category")]
         public int categoryId { get; set; }                // from list 
-        public Category category { get; set; }             // navigation property
-        public List<Review> Reviews { get; set; } = new List<Review>(); // reverse navigation
-        public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();// reverse navigation 
+        public virtual Category category { get; set; }             // navigation property
+        public virtual List<Review> Reviews { get; set; } = new List<Review>(); // reverse navigation
+        public virtual List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();// reverse navigation 
     }
 }
